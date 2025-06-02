@@ -15,5 +15,12 @@ twoway ///
     legend(label(1 "Treated") label(2 "Control")) ///
     title("Average Outcome Over Time by Treatment Status") ///
     ytitle("Average Outcome") xtitle("Year")
+
 	
+	
+*
 use "homeexamdata.dta", clear
+
+dis 0.75*_N^(1/3)
+tsset year 
+newey y base, lag(8)
