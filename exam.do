@@ -34,13 +34,16 @@ outreg2 using results.doc, replace                            ///
     ctitle("Two‐Way FE")                                       ///
     noobs nor2
 
+* Collapse the data
+collapse (mean) y, by(year treated)
 
-collapse (mean) y post, by(year treated)
-
+* Reshape to wide format 
 reshape wide y, i(year) j(treated)
 
+* generate delta
 gen diff_y = y1-y0
 
+* Scatterplot of differens over time
 scatter diff_y year, c(l) xline(2008.5) title("δ of treated and average control group")
 
 dis 0.75*_N^(1/3)
