@@ -17,17 +17,17 @@ twoway ///
     ytitle("Average Outcome") xtitle("Year")
 
 	
-	
-*
 use "homeexamdata.dta", clear
 
 gen post_treat = post*treated
-reg y base i.year i.id post_treat, vce(cluster id)
 
-xtset id year
-xtreg y absorb(i.year) base post_treat, fe vce(cluster id)
 
+* alternativly 
+* reg y i.year i.id post_treat base, vce(cluster id)
+
+* two way fixed effect absorbing both id and year 
 reghdfe y base post_treat, absorb(id year) vce(cluster id)
+
 outreg2 using results.doc, replace                            ///
     keep(base post_treat)                                      ///
     bdec(3) sdec(3)                                            ///
@@ -35,17 +35,13 @@ outreg2 using results.doc, replace                            ///
     noobs nor2
 
 
-outreg2 using results.doc, replace ///
-    keep(base post_treat) ///
-    bdec(3) sdec(3) ///
-    ctitle("Two‐Way FE")
-
 collapse (mean) y post, by(year treated)
 
 reshape wide y, i(year) j(treated)
 
 gen diff_y = y1-y0
 
+scatter diff_y year, c(l) xline(2008.5) title("δ of treated and average control group")
 
 dis 0.75*_N^(1/3)
 tsset year 
