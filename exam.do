@@ -28,11 +28,13 @@ gen post_treat = post*treated
 * two way fixed effect absorbing both id and year 
 reghdfe y base post_treat, absorb(id year) vce(cluster id)
 
-outreg2 using results.doc, replace                            ///
-    keep(base post_treat)                                      ///
-    bdec(3) sdec(3)                                            ///
-    ctitle("Two‐Way FE")                                       ///
-    noobs nor2
+esttab using results.rtf, replace ///
+    se star(* 0.10 ** 0.05 *** 0.01) ///
+    keep(base post_treat) ///
+    title("Two-Way Fixed Effects Regression") ///
+    label ///
+    b(3) se(3) ///
+    nogaps nomtitles
 
 * Collapse the data
 collapse (mean) y, by(year treated)
