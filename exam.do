@@ -1,6 +1,9 @@
 * Read data
 use "homeexamdata.dta", clear
 
+* describe 
+describe
+
 * summarize
 summarize 
 
