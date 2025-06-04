@@ -26,11 +26,22 @@ gen post_treat = post*treated
 * reg y i.year i.id post_treat base, vce(cluster id)
 
 * two way fixed effect absorbing both id and year 
+
+reg post_treat base
+
+esttab using results0.rtf, replace ///
+    se star(* 0.10 ** 0.05 *** 0.01) ///
+    keep(base _cons) ///
+    title("Regression Table: Post_treat = α + β · base") ///
+    label ///
+    b(3) se(3) ///
+    nogaps nomtitles
+	
 reghdfe y base post_treat, absorb(id year) vce(cluster id)
 
-esttab using results.rtf, replace ///
+esttab using results1.rtf, replace ///
     se star(* 0.10 ** 0.05 *** 0.01) ///
-    keep(base post_treat) ///
+    keep(base post_treat _cons) ///
     title("Two-Way Fixed Effects Regression") ///
     label ///
     b(3) se(3) ///
