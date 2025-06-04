@@ -44,12 +44,23 @@ esttab using results0.rtf, replace ///
     label ///
     b(3) se(3) ///
     nogaps nomtitles
-
 	
+reg post_treat shock
+	
+esttab using results_shock.rtf, replace ///
+    se star(* 0.10 ** 0.05 *** 0.01) ///
+    keep(shock _cons) ///
+    title("Regression Table: Post_treat = α + β · shock") ///
+    label ///
+    b(3) se(3) ///
+    nogaps nomtitles
+	
+* by checking we see that base is a significant predictor of y therefore will be used in our analysis, by looking at the vif we can test for multicollinearity
+reg y post_treat shock base i.year i.id, vce(cluster id)
+vif
 
-* by checking we see that base is a significant predictor of y therefore will be used in our analysis
-reghdfe y base post_treat, absorb(id year) vce(cluster id)
-reghdfe y post_treat, absorb(id year) vce(cluster id)
+
+
 
 reghdfe y base post_treat, absorb(id year) vce(cluster id)
 
