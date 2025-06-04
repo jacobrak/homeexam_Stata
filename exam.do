@@ -44,7 +44,13 @@ esttab using results0.rtf, replace ///
     label ///
     b(3) se(3) ///
     nogaps nomtitles
+
 	
+
+* by checking we see that base is a significant predictor of y therefore will be used in our analysis
+reghdfe y base post_treat, absorb(id year) vce(cluster id)
+reghdfe y post_treat, absorb(id year) vce(cluster id)
+
 reghdfe y base post_treat, absorb(id year) vce(cluster id)
 
 esttab using results1.rtf, replace ///
