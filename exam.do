@@ -60,21 +60,22 @@ esttab using results1.rtf, replace ///
     b(3) se(3) ///
     nogaps nomtitles
 
+* unused 
 * Collapse the data
-collapse (mean) y, by(year treated)
+* collapse (mean) y, by(year treated)
 
 * Reshape to wide format 
-reshape wide y, i(year) j(treated)
+*reshape wide y, i(year) j(treated)
 
 * generate delta
-gen diff_y = y1-y0
+* gen diff_y = y1-y0
 
 * Scatterplot of differens over time
-scatter diff_y year, c(l) xline(2008.5) title("δ of treated and average control group")
+* scatter diff_y year, c(l) xline(2008.5) title("δ of treated and average control group")
 
-dis 0.75*_N^(1/3)
-tsset year 
-newey diff_y post, lag(3)
+* dis 0.75*_N^(1/3)
+* tsset year 
+* newey diff_y post, lag(3)
 
 **************************************************************************************************************************************************************************************************************************************************************
 * Question 3
