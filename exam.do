@@ -99,29 +99,16 @@ gen post_5=treated*(year>=2009+5) // Binned end point +4
 
 reghdfe y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3  post_4 base shock, absorb(id year) vce(cluster id) // No robusts according to Peters code. 
 
-reg y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3  post_4 base shock i.year i.id, vce(cluster id)
-*******************************************
-* Question 3:2 
-*******************************************
-*Skrivs i dokumentet 
+* or reg y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3  post_4 base shock i.year i.id, vce(cluster id)
 
 *******************************************
-*Question 3:3
-*******************************************
-
-* Fattar inte riktigt vad som menas? 
-
-
-*******************************************
-* Question 3:4 | Test Parallel Trends
+* Question 3.4 | Test Parallel Trends
 *******************************************
 
 **F-test
 reghdfe y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3  post_4 base shock, vce(cluster id)  absorb(id year) // No robusts according to Peters code. 
 
 test pre_4 pre_3 pre_2 
-
-
 
 **Straight line test. 
 ******* Är osäker ifall denna borde ersättas av XTEVENT? 
@@ -133,12 +120,8 @@ test pre_4 pre_3 pre_2
 	yline(0, lpattern(dash) lcolor(black) lwidth(thin)) ///
 	xline(4.5, lpattern(dash) lcolor(black) lwidth(vthin)) 
 	
-	
 xtevent y, panelvar(id) ///
 timevar(year) policyvar(policy) window(-4 4) impute(stag) reghdfe plot 
-
-
-
 
 * event study plot // Chanelles graf
 marginsplot, recast(connected) ciopts(recast(rline)) /// 
