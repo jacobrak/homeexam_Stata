@@ -89,6 +89,14 @@ gen post_4=treated*(year>=2009+4) // Binned end point +4
 * regression
 reghdfe y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3  post_4 base shock, absorb(id year) vce(cluster id) // cluster erros
 
+esttab using resultsevent.rtf, replace ///
+    se star(* 0.10 ** 0.05 *** 0.01) ///
+    keep(pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3 post_4 base shock _cons) ///
+    title("Event study") ///
+    label ///
+    b(3) se(3) ///
+    nogaps nomtitles rtf
+
 *******************************************
 * Question 3:4 | Test Parallel Trends
 *******************************************
