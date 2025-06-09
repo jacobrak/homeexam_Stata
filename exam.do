@@ -20,6 +20,14 @@ twoway ///
     title("Average Outcome Over Time by Treatment Status") ///
     ytitle("Average Outcome") xtitle("Year")
 
+* Reshape to wide format 
+reshape wide y, i(year) j(treated)
+
+* generate delta
+gen diff_y = y1-y0
+
+* Scatterplot of differens over time
+scatter diff_y year, c(l) xline(2008.5) title("δ of treated and average control group")
 
 *******************************************
 * Question 2
@@ -87,17 +95,25 @@ esttab using results1.rtf, replace ///
 
 use homeexamdata.dta, clear
 
-forvalues z=0/4 {
+forvalues z=0/3 {
 	
 	gen pre_`z'=treated*(year==2009-`z')
 	gen post_`z'=treated*(year==2009+`z')
 	
 }
 
-gen pre_5=treated*(year<=2009-5) // Binned end point -4
-gen post_5=treated*(year>=2009+5) // Binned end point +4
+gen pre_4=treated*(year<=2009-4) // Binned end point -4
+gen post_4=treated*(year>=2009+4) // Binned end point +4
 
-reghdfe y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3  post_4 base shock, absorb(id year) vce(cluster id) // No robusts according to Peters code. 
+reghdfe y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3 post_4 base shock, absorb(id year) vce(cluster id)
+ 
+esttab using resultsevent.rtf, replace ///
+    se star(* 0.10 ** 0.05 *** 0.01) ///
+    keep(pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3 post_4 base shock _cons) ///
+    title("Event study") ///
+    label ///
+    b(3) se(3) ///
+    nogaps nomtitles rtf
 
 * or reg y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3  post_4 base shock i.year i.id, vce(cluster id)
 
@@ -106,7 +122,7 @@ reghdfe y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3  post_4 base shock, abso
 *******************************************
 
 **F-test
-reghdfe y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3  post_4 base shock, vce(cluster id)  absorb(id year) // No robusts according to Peters code. 
+reghdfe y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3  post_4 base shock, vce(cluster id)  absorb(id year) 
 
 test pre_4 pre_3 pre_2 
 
