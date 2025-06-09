@@ -33,17 +33,18 @@ scatter diff_y year, c(l) xline(2008.5) title("δ of treated and average control
 * Question 2
 *******************************************
 
+* Read data
 use "homeexamdata.dta", clear
 
+* Generate post_trest
 gen post_treat = post*treated
 
-
-* alternativly 
-* reg y i.year i.id post_treat base, vce(cluster id)
-
-* two way fixed effect absorbing both id and year 
-
+* Testing pre-treatment effect.
 reg post_treat base shock
+
+* Extra tests, confindence intervall contains 0 
+reg base post_treat  
+reg shock post_treat
 
 esttab using results0.rtf, replace ///
     se star(* 0.10 ** 0.05 *** 0.01) ///
@@ -57,6 +58,7 @@ esttab using results0.rtf, replace ///
 reg y post_treat shock base i.year i.id, vce(cluster id)
 vif
 
+* regression 
 reghdfe y base shock post_treat, absorb(id year) vce(cluster id)
 
 esttab using results1.rtf, replace ///
@@ -84,24 +86,26 @@ forvalues z=0/3 {
 gen pre_4=treated*(year<=2009-4) // Binned end point -4
 gen post_4=treated*(year>=2009+4) // Binned end point +4
 
+* regression
 reghdfe y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3  post_4 base shock, absorb(id year) vce(cluster id) // cluster erros
 
 *******************************************
 * Question 3:4 | Test Parallel Trends
 *******************************************
 
-**F-test
+** F-test
 reghdfe y pre_4 pre_3 pre_2 post_0 post_1 post_2 post_3  post_4 base shock, absorb(id year)  vce(cluster id) // cluster erros
 
 test pre_4 pre_3 pre_2 
 	
-** Straight line test 	
+** Straight line test, line is added post render.
 xtevent y, panelvar(id) ///
 timevar(year) policyvar(policy) window(-3 3) impute(stag) reghdfe plot 
 
 *******************************************
 * Question 4 
 *******************************************
+* read data
 use homeexamdata.dta, clear
 
 foreach year in 1990 1994 1998 2000 2002 2007 2008 {
@@ -133,6 +137,7 @@ display "Average ATT (2009–2020) = " %6.3f r(mean)  // Summary in average.
 
 ********************************* Placebo *********************************
 
+* read data
 use homeexamdata.dta, clear
 
 forvalues z=1/39 {
